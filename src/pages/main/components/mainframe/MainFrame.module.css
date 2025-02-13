@@ -1,0 +1,35 @@
+.frameContent {
+    height: 100%;
+    background: linear-gradient(to bottom, #A7BCFC, #91A5E3, #91A5E3, #3A68F0);
+}
+
+.topTitle {
+    background-color: #2b52c4;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    height: 2rem;
+    align-items: center;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.text {
+    color: #2b52c4;
+    font-size: 2rem;
+    padding: 1rem;
+    margin-top: 2rem;;
+}
+
+.pictureContainer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.picture {
+    width: 50vw; /* Ширина изображения будет 50% от ширины окна */
+    height: auto; 
+}
+

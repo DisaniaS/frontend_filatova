@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './utils/AuthContext';
 import ProtectedRoute from './utils/ProtectedRoute';
-import Home from './pages/main/example';
+import Mainbase from './pages/main/MainBase';
 import AuthPage from './pages/authentication/AuthPage';
 
 const App = () => {
@@ -15,11 +15,11 @@ const App = () => {
             path="/"
             element={
               <ProtectedRoute>
-                <Home />
+                <Mainbase />
               </ProtectedRoute>
             }
           />
-
+          <Route path='/main' element={<Mainbase/>}/>
         </Routes>
       </Router>
     </AuthProvider>
