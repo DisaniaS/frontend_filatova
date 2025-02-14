@@ -6,7 +6,7 @@ const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useContext(AuthContext);
 
   if (loading) {
-    return <div>Loading...</div>; // или любой другой индикатор загрузки
+    return <div>Loading...</div>;
   }
 
   return isAuthenticated ? children : <Navigate to="/authentication" />;

@@ -49,6 +49,13 @@
     border-color: #2b52c4;
   }
   
+  .bottomButtons{
+    display: flex;
+    flex-direction: row;
+
+  }
+
+  .previousButton,
   .nextButton,
   .submitButton {
     width: 100%;
@@ -62,8 +69,31 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
+
+  .previousButton {
+    margin-right: 1rem;
+    background-color: transparent;
+    color: #2b52c4;
+    border: 2px solid #2b52c4;
+  }
   
+  .previousButton:hover {
+    background-color: #2b52c4;
+    color: #fff;
+  }
+
   .nextButton:hover,
   .submitButton:hover {
     background-color: #6a89e5;
+  }
+
+  .errorInput {
+    border-color: #ff4d4d !important;
+  }
+  
+  .errorText {
+    color: #ff4d4d;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
   }

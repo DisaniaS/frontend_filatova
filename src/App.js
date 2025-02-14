@@ -6,6 +6,7 @@ import Mainbase from './pages/main/MainBase';
 import AuthPage from './pages/authentication/AuthPage';
 
 const App = () => {
+
   return (
     <AuthProvider>
       <Router>
@@ -19,7 +20,6 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          <Route path='/main' element={<Mainbase/>}/>
         </Routes>
       </Router>
     </AuthProvider>

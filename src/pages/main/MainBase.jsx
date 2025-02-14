@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { AuthContext } from '../../utils/AuthContext'; 
 import MainFrame from './components/mainframe/MainFrame';
 import logo from "../../assets/pictures/Logo.png"
 import styles from './MainBase.module.css';
@@ -10,7 +11,12 @@ const Page2 = () => <div className={styles.pageContent}>Страница 2</div>
 const Page3 = () => <div className={styles.pageContent}>Страница 3</div>;
 
 const MainBase = () => {
+  const { logout } = useContext(AuthContext);
   const [currentPage, setCurrentPage] = useState('home');
+
+  const handleLogout = () => {
+    logout();
+  };
 
   const renderPage = () => {
     switch (currentPage) {
@@ -25,14 +31,9 @@ const MainBase = () => {
     }
   };
 
-  const handleLogout = () => {
-    console.log('Выход из системы');
-    // Здесь можно добавить логику выхода
-  };
-
   return (
     <div className={styles.mainBaseContainer}>
-      {/* Левое меню */}
+
       <div className={styles.sideMenu}>
         <div className={styles.logo}>
           <img src={logo} alt="vnii signal" className={styles.logoPictire}/>
@@ -63,7 +64,7 @@ const MainBase = () => {
         </div>
       </div>
 
-      {/* Основной контент */}
+
       <div className={styles.contentContainer}>
         <div className={styles.topMenu}>
           <div className={styles.topMenuContent}>
@@ -79,7 +80,7 @@ const MainBase = () => {
           <div className={styles.blueLine}></div>
         </div>
 
-        {/* Контент страницы */}
+
         <div className={styles.content}>
           {renderPage()}
         </div>

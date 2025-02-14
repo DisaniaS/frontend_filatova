@@ -1,17 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../../utils/AuthContext'; 
+import { registerRequest } from '../../../redux/slices/user';
+import { validateField, validateForm } from "../../../utils/Validation"
 import styles from './RegistrationModal.module.css';
 
 const RegistrationModal = ({ onClose }) => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  
+  const { isAuthenticated, login } = useContext(AuthContext);
+
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    middleName: '',
-    username: '',
+    fname: '',
+    lname: '',
+    sname: '',
+    login: '',
     password: '',
     confirmPassword: '',
   });
+  const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,18 +36,48 @@ const RegistrationModal = ({ onClose }) => {
       ...formData,
       [name]: value,
     });
+    if (!validateField(name, value)) {
+      setErrors((prev) => ({ ...prev, [name]: true }));
+    } else {
+      setErrors((prev) => ({ ...prev, [name]: false }));
+    }
   };
 
   const handleNext = () => {
-    setStep(2);
+    if (validateForm(formData, 1)) {
+      setStep(2);
+    } else {
+      alert('Заполните все поля корректно!');
+    }
+  };
+  const handlePrevious = () => {
+    setStep(1);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Регистрация:', formData);
-    onClose();
+    if (formData.password !== formData.confirmPassword) {
+      setErrors((prev) => ({ ...prev, confirmPassword: true }));
+      alert('Пароли не совпадают');
+      return;
+    }
+    if (!validateForm(formData, 2)) {
+      alert('Проверьте правильность ввода данных');
+      return;
+    }
+    const { confirmPassword, ...dataToSubmit } = formData;
+    try {
+      const data = await dispatch(registerRequest(dataToSubmit));
+      if ('token' in data.payload) {
+        window.localStorage.setItem('token', data.payload.token)
+      } else {
+        alert('Не удалось зарегистрироваться. Попробуйте другой логин.');
+      }
+    } catch (error) {
+      console.error('Ошибка при регистрации:', error);
+      alert('Произошла ошибка при регистрации. Попробуйте позже.');
+    }
   };
-
   return (
     <div className={styles.modalOverlay}>
       <motion.div
@@ -56,46 +103,71 @@ const RegistrationModal = ({ onClose }) => {
               <div className={styles.formGroup}>
                 <input
                   type="text"
-                  name="firstName"
+                  name="fname"
                   placeholder="Имя"
-                  value={formData.firstName}
+                  value={formData.fname}
                   onChange={handleChange}
                   required
+                  className={errors.fname ? styles.errorInput : ''}
                 />
+                {errors.fname && (
+                  <span className={styles.errorText}>
+                    Только русские буквы, минимум 3 символа
+                  </span>
+                )}
               </div>
               <div className={styles.formGroup}>
                 <input
                   type="text"
-                  name="lastName"
+                  name="lname"
                   placeholder="Фамилия"
-                  value={formData.lastName}
+                  value={formData.lname}
                   onChange={handleChange}
                   required
+                  className={errors.lname ? styles.errorInput : ''}
                 />
+                {errors.lname && (
+                  <span className={styles.errorText}>
+                    Только русские буквы, минимум 3 символа
+                  </span>
+                )}
               </div>
               <div className={styles.formGroup}>
                 <input
                   type="text"
-                  name="middleName"
+                  name="sname"
                   placeholder="Отчество"
-                  value={formData.middleName}
+                  value={formData.sname}
                   onChange={handleChange}
+                  className={errors.sname ? styles.errorInput : ''}
                 />
+                {errors.sname && (
+                  <span className={styles.errorText}>
+                    Только русские буквы, минимум 3 символа
+                  </span>
+                )}
               </div>
               <div className={styles.formGroup}>
                 <input
                   type="text"
-                  name="username"
+                  name="login"
                   placeholder="Логин"
-                  value={formData.username}
+                  value={formData.login}
                   onChange={handleChange}
                   required
+                  className={errors.login ? styles.errorInput : ''}
                 />
+                {errors.login && (
+                  <span className={styles.errorText}>
+                    Доступные символы: a-z; A-Z; 0-9; _; .; минимум 3 символа
+                  </span>
+                )}
               </div>
               <button
                 type="button"
                 className={styles.nextButton}
                 onClick={handleNext}
+                disabled={!validateForm(formData, 1)}
               >
                 Далее
               </button>
@@ -118,7 +190,11 @@ const RegistrationModal = ({ onClose }) => {
                   value={formData.password}
                   onChange={handleChange}
                   required
+                  className={errors.password ? styles.errorInput : ''}
                 />
+                {errors.password && (
+                  <span className={styles.errorText}>Минимум 6 символов</span>
+                )}
               </div>
               <div className={styles.formGroup}>
                 <input
@@ -128,15 +204,28 @@ const RegistrationModal = ({ onClose }) => {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   required
+                  className={errors.confirmPassword ? styles.errorInput : ''}
                 />
+                {errors.confirmPassword && (
+                  <span className={styles.errorText}>Пароли не совпадают</span>
+                )}
               </div>
-              <button
-                type="submit"
-                className={styles.submitButton}
-                onClick={handleSubmit}
-              >
-                Зарегистрироваться
-              </button>
+              <div className={styles.bottomButtons}>
+                <button
+                  type="button"
+                  className={styles.previousButton}
+                  onClick={handlePrevious}
+                >
+                  Назад
+                </button>
+                <button
+                  type="submit"
+                  className={styles.submitButton}
+                  onClick={handleSubmit}
+                >
+                  Зарегистрироваться
+                </button>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

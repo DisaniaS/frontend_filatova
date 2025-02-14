@@ -73,3 +73,14 @@
   background-color: #2b52c4;
   color: #fff;
 }
+
+.errorInput {
+  border-color: #ff4d4d !important;
+}
+
+.errorText {
+  color: #ff4d4d;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+}
