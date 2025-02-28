@@ -1,0 +1,66 @@
+.frameContent {
+    position: relative;
+    height: 100%;
+    background: linear-gradient(to bottom, #A7BCFC, #91A5E3, #91A5E3, #3A68F0);
+  }
+
+.topTitle {
+    background-color: #2b52c4;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    height: 2rem;
+    align-items: center;
+    font-size: 1.5rem;
+    color: white;
+}
+  
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+.cardList {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+  
+.homeButton {
+    background-color: #6a89e5;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-left: 2rem;
+    padding: 0.5rem;
+    color: #000;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.loadingContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.8); /* Полупрозрачный фон */
+  }
+  
+  .loadingText {
+    font-size: 24px;
+    color: #333;
+  }

@@ -29,7 +29,7 @@
 }
 
 .picture {
-    width: 50vw; /* Ширина изображения будет 50% от ширины окна */
+    width: 50vw;
     height: auto; 
 }
 

@@ -1,12 +1,15 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../utils/AuthContext'; 
 import MainFrame from './components/mainframe/MainFrame';
+import TestReportFrame from './components/testreports/TestReportsFrame';
 import logo from "../../assets/pictures/Logo.png"
 import styles from './MainBase.module.css';
 
 // Компоненты для разных страниц
 const HomePage = () => <MainFrame/>;
-const Page1 = () => <div className={styles.pageContent}>Страница 1</div>;
+const Page1 = ({ setCurrentPage }) => (
+  <TestReportFrame onBack={() => setCurrentPage('home')} />
+);
 const Page2 = () => <div className={styles.pageContent}>Страница 2</div>;
 const Page3 = () => <div className={styles.pageContent}>Страница 3</div>;
 
@@ -21,7 +24,7 @@ const MainBase = () => {
   const renderPage = () => {
     switch (currentPage) {
       case 'page1':
-        return <Page1 />;
+        return <Page1 setCurrentPage={setCurrentPage} />;
       case 'page2':
         return <Page2 />;
       case 'page3':
