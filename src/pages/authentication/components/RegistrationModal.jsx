@@ -11,7 +11,7 @@ const RegistrationModal = ({ onClose }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   
-  const { isAuthenticated, login } = useContext(AuthContext);
+  const { isAuthenticated } = useContext(AuthContext);
 
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({

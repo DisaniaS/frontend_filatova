@@ -49,7 +49,7 @@ const AuthPage = () => {
     try {
       const data = await dispatch(loginRequest(loginData));
       if ('token' in data.payload) {
-        login(data.token)
+        login(data.payload.token)
       } else {
         alert('Неверные логин или пароль');
       }

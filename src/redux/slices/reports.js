@@ -14,6 +14,15 @@ export const getReports = createAsyncThunk('reports/getReports', async ({ skip, 
   }
 );
 
+export const getReportByNumber = createAsyncThunk('reports/getReportByNumber', async (number, { rejectWithValue }) => {
+  try {
+      const response = await request.get(`/reports/${number}`);
+      return response.data; // Предполагается, что ответ содержит данные отчёта
+  } catch (error) {
+      return rejectWithValue(error.response.data);
+  }
+});
+
 const reportsSlice = createSlice({
   name: 'reports',
   initialState: {
@@ -36,7 +45,13 @@ const reportsSlice = createSlice({
       })
       .addCase(getReports.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = ("payload" in action)?"Неизвестная ошибка":action.payload.detail;
+      })
+      .addCase(getReportByNumber.fulfilled, (state, action) => {
+        state.cardsData = [action.payload];
+      })
+      .addCase(getReportByNumber.rejected, (state, action) => {
+          state.error = ("payload" in action) ? "Неизвестная ошибка" : action.payload.detail;
       });
   },
 });

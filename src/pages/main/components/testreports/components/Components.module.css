@@ -1,17 +1,75 @@
 /* Card.jsx */
-
 .card {
-    margin: 0.5rem 2rem 0.5rem 2rem;
+    margin: 0.5rem 1rem;
     align-items: center;
     justify-content: space-between;
     display: flex;
     flex-direction: row;
     border: 1px solid #ccc;
-    border-radius: 8px;
+    border-radius: 1.5rem;
     padding: 15px;
     background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    height:60px;
 }
 
+.cardContent {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.cardInfo {
+    flex-direction: row;
+    display: flex;
+    margin: 0;
+}
+
+.productNumber {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.creatorInfo {
+    font-size: 1em;
+    font-weight: 500;
+    color: #2b52c4;
+    margin: 0;
+    align-items: center;
+    display: flex
+}
+
+.dateInfo {
+    font-size: 1em;
+    color: #666;
+    margin-left: 2rem;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.downloadButton {
+    margin-left: 1rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    transition: filter 0.3s ease;
+    cursor: pointer;
+}
+
+.downloadButton:hover {
+    filter: brightness(1.2);
+}
+
+.cardButtons{
+    display: flex;
+    flex-direction: row;
+}
+
+.modalContent {
+    max-height: 70vh;
+    overflow-y: auto;
+}
 
 /* Pagination.jsx */
 
@@ -35,6 +93,10 @@
     transition: background-color 0.3s ease;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
+
+.pagination button:hover {
+    background-color: #2b52c4;
+  }
 
 .pagination button:disabled {
     background-color: #9fa6cf;

@@ -14,7 +14,7 @@ const MainFrame = () => {
                 гироскопических систем 
             </div>
             <div className={styles.pictureContainer}>
-                <img src={picture} alt="picture of main page" className={styles.picture}/>
+                <img src={picture} alt="Изображение на главном экране" className={styles.picture}/>
             </div>
             
         </div>
