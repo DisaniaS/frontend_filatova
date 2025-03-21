@@ -116,6 +116,69 @@
     padding-right: 2rem;
     margin-bottom: 2rem;
   }
+
+  /* Модальное окно чата */
+
+.chatModal{
+  position: absolute;
+  left: 10%;
+  top: 30%;
+}
+
+.chatButtonContainer {
+  position: fixed;
+  bottom: 3rem;
+  left: 3rem;
+  z-index: 1000;
+}
+
+.chatIcon {
+  width: 10rem;
+  height: 10rem;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  transition: filter 0.3s ease;
+}
+
+.chatIcon:hover {
+  transform: scale(1.01);
+  filter: brightness(1.1);
+}
+
+.unreadBadge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 5px;
+  font-size: 1rem;
+}
+
+.chatContainer {
+  display: flex;
+  flex-direction: column;
+  height: 400px;
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.message {
+  margin-bottom: 10px;
+}
+
+.inputContainer {
+  display: flex;
+  gap: 10px;
+}
   
 
   

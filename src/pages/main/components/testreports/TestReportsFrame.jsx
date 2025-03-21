@@ -49,16 +49,17 @@ const TestReportFrame = ({ onBack }) => {
         setFile(null);
         alert('Отчёт успешно загружен');
         setIsModalVisible(false)
-    } catch (error) {
-      if (error.response) {
-        if (error.response.status === 409) {
+        dispatch(getReports({ skip: (currentPage - 1) * cardsPerPage, max: cardsPerPage }));
+      } catch (error) {
+        if (error.response) {
+          if (error.response.status === 409) {
             alert('Ошибка: данный номер уже был использован.');
+          } else {
+            alert('Ошибка при загрузке отчёта: ' + (error.response.data.message || 'Неизвестная ошибка'));
+          }
         } else {
-            alert('Ошибка при загрузке отчёта: ' + error.response.data.message || 'Неизвестная ошибка');
+          alert('Ошибка при загрузке отчёта: ' + error.message);
         }
-    } else {
-        alert('Ошибка при загрузке отчёта: ' + error.message);
-    }
     }
 };
 
