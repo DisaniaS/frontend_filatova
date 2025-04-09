@@ -1,0 +1,79 @@
+.frameContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    height: 100%;
+    background: linear-gradient(to bottom, #A7BCFC, #91A5E3, #91A5E3, #3A68F0);
+}
+
+.topTitle {
+    background-color: #2b52c4;
+    width: 100%;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    height: 2rem;
+    align-items: center;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.controls {
+    width: 90%;
+    display: flex;
+    justify-content: flex-start;
+    padding: 1rem;
+    gap: 1rem;
+}
+
+.tableContainer {
+    width: 90%;
+    margin-top: 1rem;
+    overflow-x: auto;
+    background-color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.excelContent {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.homeButton {
+    margin: 0.5rem;
+    background-color: #6a89e5;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: #000;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.homeButton:hover {
+    background-color: #2b52c4;
+}
+
+.errorContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(255, 0, 0, 0.1);
+}
+
+.errorText {
+    font-size: 24px;
+    color: red;
+}
