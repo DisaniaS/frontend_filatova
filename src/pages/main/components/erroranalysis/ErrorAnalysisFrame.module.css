@@ -1,0 +1,98 @@
+.frameContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    background: linear-gradient(to bottom, #A7BCFC, #91A5E3, #91A5E3, #3A68F0);
+}
+
+.topTitle {
+    background-color: #2b52c4;
+    width: 100%;
+    padding: 0.5rem;
+    text-align: center;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.tabs {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.productsContainer {
+    display: flex;
+    gap: 2rem;
+    width: 90%;
+    margin-top: 1rem;
+}
+
+.productList {
+    flex: 1;
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.productItem {
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    background: #f0f4f8;
+    border-radius: 4px;
+}
+
+.statsContainer {
+    width: 90%;
+    margin-top: 1rem;
+}
+
+.chartContainer {
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.chartPlaceholder {
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f4f8;
+    margin-bottom: 1rem;
+}
+
+.chartControls {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.correlationContainer {
+    width: 90%;
+    background: white;
+    padding: 2rem;
+    margin-top: 1rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.footer {
+    margin-top: auto;
+    padding: 1rem;
+}
+
+.homeButton {
+    background-color: #6a89e5;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.homeButton:hover {
+    background-color: #2b52c4;
+}

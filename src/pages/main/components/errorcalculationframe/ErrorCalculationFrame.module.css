@@ -77,3 +77,25 @@
     font-size: 24px;
     color: red;
 }
+
+.statusIndicator {
+    display: flex;
+    align-items: center;
+    margin-right: 16px;
+}
+
+.statusText {
+    margin-left: 8px;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.85);
+}
+
+.calculateButton {
+    margin-right: 8px;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+}

@@ -3,6 +3,7 @@ import { AuthContext } from '../../utils/AuthContext';
 import MainFrame from './components/mainframe/MainFrame';
 import TestReportFrame from './components/testreports/TestReportsFrame';
 import ErrorCalculationFrame from './components/errorcalculationframe/ErrorCalculationFrame'
+import ErrorAnalysisFrame from './components/erroranalysis/ErrorAnalysisFrame'
 import logo from "../../assets/pictures/Logo.png";
 import iconChat from "../../assets/pictures/iconChat.png";
 import styles from './MainBase.module.css';
@@ -15,7 +16,9 @@ const Page1 = ({ setCurrentPage }) => (
 const Page2 = ({ setCurrentPage }) => (
   <ErrorCalculationFrame onBack={() => setCurrentPage('home')} />
 );
-const Page3 = () => <div className={styles.pageContent}>Страница 3</div>;
+const Page3 = ({ setCurrentPage }) => (
+  <ErrorAnalysisFrame onBack={() => setCurrentPage('home')} />
+);
 
 const MainBase = () => {
   const { logout } = useContext(AuthContext);
