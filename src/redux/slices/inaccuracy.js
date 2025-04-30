@@ -25,6 +25,18 @@ export const getCalculationStatus = createAsyncThunk(
   }
 );
 
+export const fetchErrorData = createAsyncThunk(
+  'inaccuracy/fetchErrorData',
+  async (_, { rejectWithValue }) => {
+      try {
+          const response = await request.get('/inaccuracy/error-data');
+          return response.data;
+      } catch (error) {
+          return rejectWithValue(error.response.data);
+      }
+  }
+);
+
 const inaccuracySlice = createSlice({
   name: 'inaccuracy',
   initialState: {
@@ -56,6 +68,18 @@ const inaccuracySlice = createSlice({
       .addCase(getCalculationStatus.fulfilled, (state, action) => {
         state.uncalculatedCount = action.payload.uncalculated_count;
         state.hasUncalculated = action.payload.has_uncalculated;
+      })
+      .addCase(fetchErrorData.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchErrorData.fulfilled, (state, action) => {
+          state.loading = false;
+          state.errorData = action.payload;
+      })
+      .addCase(fetchErrorData.rejected, (state, action) => {
+          state.loading = false;
+          state.error = action.payload?.detail || 'Произошла ошибка при загрузке данных';
       });
   },
 });
