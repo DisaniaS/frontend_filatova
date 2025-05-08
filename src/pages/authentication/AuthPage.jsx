@@ -42,19 +42,14 @@ const AuthPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    if (!validateField('username', loginData.username) || !validateField('password', loginData.password)) {
+    if (!validateField('login', loginData.login) || !validateField('password', loginData.password)) {
       alert('Проверьте правильность ввода данных');
       return;
     }
-    try {
-      const data = await dispatch(loginRequest(loginData));
-      if ('token' in data.payload) {
-        login(data.payload.token)
-      } else {
-        alert('Неверные логин или пароль');
-      }
-    } catch (error) {
-      alert('Произошла ошибка при входе. Попробуйте позже.');
+    
+    const success = await login(loginData);
+    if (!success) {
+      alert('Неверные логин или пароль');
     }
   };
 

@@ -180,5 +180,39 @@
   gap: 10px;
 }
   
+.adminButton {
+  padding: 0.5rem 0.75rem;
+  font-size: 1.25rem;
+  margin-right: 10px;
+  background-color: #2b52c4;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
 
+.adminButton:hover {
+  background-color: #6a89e5;
+}
+
+.iconSettings{
+  height: 1.5rem;
+}
+
+/* .logoutButton {
+  padding: 0.75rem 2rem;
+  background-color: #2b52c4;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  font-size: 1.25rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.logoutButton:hover {
+  background-color: #6a89e5;
+} */
   

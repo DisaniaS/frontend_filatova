@@ -6,6 +6,7 @@ import ErrorCalculationFrame from './components/errorcalculationframe/ErrorCalcu
 import ErrorAnalysisFrame from './components/erroranalysis/ErrorAnalysisFrame'
 import logo from "../../assets/pictures/Logo.png";
 import iconChat from "../../assets/pictures/iconChat.png";
+import iconSettings from "../../assets/pictures/iconSettings.png";
 import styles from './MainBase.module.css';
 import { Button, Input, Modal } from 'antd';
 
@@ -21,7 +22,7 @@ const Page3 = ({ setCurrentPage }) => (
 );
 
 const MainBase = () => {
-  const { logout } = useContext(AuthContext);
+  const { logout, user } = useContext(AuthContext);
   const [currentPage, setCurrentPage] = useState('home');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -127,9 +128,9 @@ const MainBase = () => {
               Добро пожаловать в систему контроля качества<br/>
               проведённых испытаний!
             </div>
-            <button className={styles.logoutButton} onClick={handleLogout}>
-              Выйти
-            </button>
+              <button className={styles.logoutButton} onClick={handleLogout}>
+                Выйти
+              </button>
           </div>
           <div className={styles.blueLine}></div>
         </div>
@@ -149,7 +150,24 @@ const MainBase = () => {
         {unreadMessages > 0 && (
           <span className={styles.unreadBadge}>{unreadMessages}</span>
         )}
+        <div>
+              {user && (
+                <>
+                  {console.log("User in MainBase:", user)}
+                  {console.log("User role:", user.role)}
+                  {user.role === 'Администратор' && (
+                    <button 
+                      className={styles.adminButton} 
+                      onClick={() => window.location.href = '/admin/users'}
+                    >
+                      <img className={styles.iconSettings} src={iconSettings} alt="Settings Icon" />
+                    </button>
+                  )}
+                </>
+              )}
+            </div>
       </div>
+      
 
       <Modal
         className={styles.chatModal}
@@ -162,9 +180,19 @@ const MainBase = () => {
         <div className={styles.messages}>
           {messages.map((msg, index) => (
             <div key={index} className={styles.message}>
-              {msg.user_is_admin && (
-                <span style={{ color: 'red', fontWeight: 'bold' }}>[Администратор] </span>
-              )}
+              {msg.user_role === 'Администратор' ? (
+                <span style={{ color: 'red', fontWeight: 'bold' }}>[{msg.user_role}] </span>
+              ) : msg.user_role === 'Инженер 1 категории' ? (
+                <span style={{ color: 'blue' }}>[{msg.user_role}] </span>
+              ) : msg.user_role === 'Инженер 2 категории' ? (
+                <span style={{ color: 'green' }}>[{msg.user_role}] </span>
+              ) : msg.user_role === 'Инженер 3 категории' ? (
+                <span style={{ color: 'purple' }}>[{msg.user_role}] </span>
+              ) : msg.user_role === 'Инженер - испытатель 3 категории' ? (
+                <span style={{ color: 'orange' }}>[{msg.user_role}] </span>
+              ) : msg.user_role === 'Ведущий инженер' ? (
+                <span style={{ color: 'teal' }}>[{msg.user_role}] </span>
+              ) : null}
               <strong>{msg.user_name}:</strong> {msg.content}
             </div>
           ))}

@@ -11,7 +11,7 @@ const RegistrationModal = ({ onClose }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, login } = useContext(AuthContext);
 
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -70,6 +70,7 @@ const RegistrationModal = ({ onClose }) => {
       const data = await dispatch(registerRequest(dataToSubmit));
       if ('token' in data.payload) {
         window.localStorage.setItem('token', data.payload.token)
+        login(data.payload.token, data.payload);
       } else {
         alert('Не удалось зарегистрироваться. Попробуйте другой логин.');
       }

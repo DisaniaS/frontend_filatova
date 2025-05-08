@@ -4,6 +4,8 @@ import { AuthProvider } from './utils/AuthContext';
 import ProtectedRoute from './utils/ProtectedRoute';
 import Mainbase from './pages/main/MainBase';
 import AuthPage from './pages/authentication/AuthPage';
+import UserRoleManager from './pages/admin/UserRoleManager';
+import AdminRoute from './utils/AdminRoute';
 
 const App = () => {
 
@@ -12,14 +14,8 @@ const App = () => {
       <Router>
         <Routes>
           <Route path="/authentication" element={<AuthPage />} />
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <Mainbase />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/" element={<ProtectedRoute><Mainbase /></ProtectedRoute>} />
+          <Route path="/admin/users" element={<AdminRoute><UserRoleManager /></AdminRoute>} />
         </Routes>
       </Router>
     </AuthProvider>
