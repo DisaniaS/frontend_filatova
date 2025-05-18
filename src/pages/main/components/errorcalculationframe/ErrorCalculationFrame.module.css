@@ -3,8 +3,10 @@
     flex-direction: column;
     align-items: center;
     position: relative;
-    height: 100%;
+    min-height: 100%;
     background: linear-gradient(to bottom, #A7BCFC, #91A5E3, #91A5E3, #3A68F0);
+    overflow-y: auto;
+    padding-bottom: 2rem;
 }
 
 .topTitle {
@@ -36,6 +38,7 @@
     padding: 1rem;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
 }
 
 .excelContent {
@@ -49,10 +52,9 @@
     border-radius: 10px;
     cursor: pointer;
     padding: 0.5rem;
-    color: #000;
+    color: white;
     border: none;
     font-size: 1rem;
-    cursor: pointer;
     transition: background-color 0.3s ease;
     box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
 }
@@ -91,11 +93,48 @@
 }
 
 .calculateButton {
-    margin-right: 8px;
+    margin: 0.5rem;
+    background-color: #6a89e5;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: white;
+    border: none;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.calculateButton:hover {
+    background-color: #2b52c4;
 }
 
 .controls {
     display: flex;
     align-items: center;
     margin-bottom: 16px;
+}
+
+.chartCard {
+    width: 90%;
+    margin-top: 0;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    background-color: white;
+    padding: 1rem;
+}
+
+.chartLoading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    width: 100%;
+}
+
+.chartContainer {
+    width: 100%;
+    height: 400px;
+    position: relative;
 }

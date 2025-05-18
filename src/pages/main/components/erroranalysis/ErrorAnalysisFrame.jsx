@@ -17,6 +17,7 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { SyncOutlined } from '@ant-design/icons';
+import DepartmentStatsChart from './DepartmentStatsChart';
 
 const { Panel } = Collapse;
 
@@ -526,6 +527,7 @@ const ErrorAnalysisFrame = ({ onBack }) => {
                             <div className={styles.chartContainer}>
                                 {errorData && <Line {...createChartData(errorData, chartType)} />}
                             </div>
+                            <DepartmentStatsChart />
                         </>
                     )}
                 </div>

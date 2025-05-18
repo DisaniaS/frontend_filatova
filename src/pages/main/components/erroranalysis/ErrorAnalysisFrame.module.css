@@ -2,10 +2,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    position: relative;
-    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: linear-gradient(to bottom, #A7BCFC, #91A5E3, #91A5E3, #3A68F0);
-    overflow: hidden;
+    overflow-y: auto;
+    padding-bottom: 2rem;
 }
 
 .topTitle {
@@ -28,20 +32,20 @@
     gap: 10px;
     margin: 1rem 0;
     z-index: 10;
+    background: linear-gradient(to bottom, #A7BCFC, #91A5E3);
+    padding: 0.5rem;
+    border-radius: 8px;
 }
 
 .productsContainer {
     width: 90%;
-    max-height: calc(100% - 140px);
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
-    overflow-x: hidden;
     padding: 1rem;
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    flex-grow: 1;
+    margin-bottom: 2rem;
 }
 
 .productsHeader {
@@ -115,24 +119,48 @@
     font-size: 0.9rem;
 }
 
-.checkStatusButton {
+.homeButton {
+    margin: 0.5rem;
     background-color: #6a89e5;
-    border-color: #6a89e5;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 0.5rem;
     color: white;
+    border: none;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.homeButton:hover {
+    background-color: #2b52c4;
+    transform: translateY(-1px);
+}
+
+.homeButton[type="primary"] {
+    background-color: #2b52c4;
+    box-shadow: 0 0 0 2px rgba(43, 82, 196, 0.2);
+    transform: translateY(-1px);
+}
+
+.checkStatusButton {
+    margin: 0.5rem;
+    background-color: #6a89e5;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: white;
+    border: none;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 4px 15px;
-    height: auto;
-    border-radius: 20px;
-    transition: all 0.3s ease;
 }
 
 .checkStatusButton:hover {
     background-color: #2b52c4;
-    border-color: #2b52c4;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .checkStatusButton:active {
@@ -148,18 +176,15 @@
     font-style: italic;
 }
 
-.statsContainer, .correlationContainer {
+.statsContainer, .correlationContainer, .productsContainer {
     width: 90%;
-    max-height: calc(100% - 140px);
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
-    overflow-x: hidden;
     padding: 1rem;
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    flex-grow: 1;
+    margin-bottom: 2rem;
 }
 
 .chartControls {
@@ -173,6 +198,8 @@
     min-height: 300px;
     max-height: 500px;
     margin-bottom: 20px;
+    width: 100%;
+    overflow: hidden;
 }
 
 .correlationInfo {
@@ -334,11 +361,6 @@
     border-radius: 4px;
 }
 
-.productsContainer {
-    display: flex;
-    gap: 20px;
-}
-
 .listTitle {
     margin-bottom: 15px;
     padding-bottom: 10px;
@@ -359,7 +381,6 @@
     box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
     align-self: flex-start;
     margin-left: 5%;
-    z-index: 10;
 }
 
 .backButton:hover {
@@ -428,19 +449,20 @@
 }
 
 .viewMeasuresButton {
+    margin: 0.5rem;
     background-color: #6a89e5;
-    border-color: #6a89e5;
-    color: #000;
-    font-weight: bold;
-    border-radius: 20px;
-    padding: 4px 15px;
-    height: auto;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: white;
+    border: none;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-.viewMeasuresButton:hover, .viewMeasuresButton:focus {
+.viewMeasuresButton:hover {
     background-color: #2b52c4;
-    border-color: #2b52c4;
-    color: #fff;
 }
 
 .measuresPopup {
@@ -477,22 +499,25 @@
 }
 
 .closeButton {
-    font-size: 28px;
-    line-height: 1;
-    background: #6a89e5;
-    color: white;
+    margin: 0.5rem;
+    background-color: #6a89e5;
     border-radius: 50%;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: white;
+    border: none;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
     width: 30px;
     height: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0;
-    cursor: pointer;
 }
 
 .closeButton:hover {
-    background: #2b52c4;
+    background-color: #2b52c4;
 }
 
 .reasonDescription {
@@ -513,19 +538,36 @@
 }
 
 .closePopupButton {
+    margin: 0.5rem;
     background-color: #6a89e5;
-    border-color: #6a89e5;
-    color: #000;
-    font-weight: bold;
-    font-size: 16px;
     border-radius: 10px;
-    padding: 4px 25px;
-    height: auto;
-    text-transform: lowercase;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: white;
+    border: none;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-.closePopupButton:hover, .closePopupButton:focus {
+.closePopupButton:hover {
     background-color: #2b52c4;
-    border-color: #2b52c4;
-    color: #fff;
+}
+
+.statsChartContainer {
+    width: 100%;
+    height: 400px;
+    margin-top: 2rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+.chartLoading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
 }

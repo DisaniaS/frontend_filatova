@@ -143,7 +143,7 @@ const ErrorCalculationFrame = ({ onBack }) => {
     return (
         <div className={styles.frameContent}>
             <div className={styles.topTitle}>
-                Просмотр Excel файла
+                Расчёт погрешностей
             </div>
 
             <div className={styles.controls}>
