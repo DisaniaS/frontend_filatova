@@ -37,6 +37,18 @@ export const fetchErrorData = createAsyncThunk(
   }
 );
 
+export const fetchCorrelationMatrix = createAsyncThunk(
+  'inaccuracy/fetchCorrelationMatrix',
+  async (_, { rejectWithValue }) => {
+      try {
+          const response = await request.get('/inaccuracy/correlation-matrix');
+          return response.data;
+      } catch (error) {
+          return rejectWithValue(error.response.data);
+      }
+  }
+);
+
 const inaccuracySlice = createSlice({
   name: 'inaccuracy',
   initialState: {
@@ -45,6 +57,9 @@ const inaccuracySlice = createSlice({
     calculationMessage: null,
     uncalculatedCount: 0,
     hasUncalculated: false,
+    correlationMatrix: null,
+    correlationLoading: false,
+    correlationError: null,
   },
   reducers: {
     clearCalculationMessage: (state) => {
@@ -80,6 +95,18 @@ const inaccuracySlice = createSlice({
       .addCase(fetchErrorData.rejected, (state, action) => {
           state.loading = false;
           state.error = action.payload?.detail || 'Произошла ошибка при загрузке данных';
+      })
+      .addCase(fetchCorrelationMatrix.pending, (state) => {
+        state.correlationLoading = true;
+        state.correlationError = null;
+      })
+      .addCase(fetchCorrelationMatrix.fulfilled, (state, action) => {
+        state.correlationLoading = false;
+        state.correlationMatrix = action.payload;
+      })
+      .addCase(fetchCorrelationMatrix.rejected, (state, action) => {
+        state.correlationLoading = false;
+        state.correlationError = action.payload?.detail || 'Произошла ошибка при загрузке матрицы корреляций';
       });
   },
 });

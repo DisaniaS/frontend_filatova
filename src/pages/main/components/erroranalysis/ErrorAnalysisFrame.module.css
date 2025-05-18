@@ -2,194 +2,311 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
     height: 100%;
     background: linear-gradient(to bottom, #A7BCFC, #91A5E3, #91A5E3, #3A68F0);
+    overflow: hidden;
 }
 
 .topTitle {
-    display: flex;
     background-color: #2b52c4;
     width: 100%;
-    text-align: center;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    height: 2rem;
     align-items: center;
-    justify-content: center;
-    font-size: 1rem;
+    font-size: 1.5rem;
     color: white;
-    flex-direction: row;
+    z-index: 10;
 }
 
 .tabs {
-    display: flex;
-    gap: 1rem;
-    padding: 1rem;
-}
-
-.productsContainer {
-    display: flex;
-    gap: 2rem;
     width: 90%;
-    margin-top: 1rem;
-}
-
-.productList {
-    flex: 1;
-    background: white;
-    padding: 1rem;
-    border-radius: 8px;
-    max-height: 400px;
-    overflow-y: auto;
-}
-
-.productItem {
-    padding: 0.5rem;
-    margin: 0.5rem 0;
-    background: #f0f4f8;
-    border-radius: 4px;
-}
-
-.statsContainer {
-    width: 90%;
-    margin-top: 1rem;
-}
-
-.chartContainer {
-    background: white;
-    padding: 1rem;
-    border-radius: 8px;
-}
-
-.chartPlaceholder {
-    height: 300px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f0f4f8;
-    margin-bottom: 1rem;
-}
-
-.chartControls {
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
-}
-
-.correlationContainer {
-    width: 90%;
-    background: white;
-    padding: 2rem;
-    margin-top: 1rem;
-    border-radius: 8px;
-    text-align: center;
-}
-
-.footer {
-    margin-top: auto;
-    padding: 1rem;
-}
-
-.homeButton {
-    background-color: #6a89e5;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.homeButton:hover {
-    background-color: #2b52c4;
-}
-
-
-.statsContainer {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    min-height: 0;
-}
-
-.chartControls {
     display: flex;
     gap: 10px;
-    justify-content: center;
-}
-
-.chartContainer {
-    flex: 1;
-    min-height: 400px;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.correlationInfo {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.correlationInfo h3 {
-    margin-bottom: 15px;
-    color: #1a1a1a;
-}
-
-.correlationDetails {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-top: 15px;
-}
-
-.loading {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 400px;
-    font-size: 18px;
-    color: #666;
-}
-
-.error {
-    color: #ff4d4f;
-    text-align: center;
-    padding: 20px;
+    margin: 1rem 0;
+    z-index: 10;
 }
 
 .productsContainer {
-    display: flex;
-    gap: 2rem;
     width: 90%;
-    margin: 1rem 0;
+    max-height: calc(100% - 140px);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex-grow: 1;
+}
+
+.productsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.productsHeader h2 {
+    margin: 0;
+    color: #2b52c4;
+    font-size: 1.5rem;
+}
+
+.productsListsContainer {
+    display: flex;
+    gap: 20px;
+    flex: 1;
+    min-height: 0;
+    margin-top: 1rem;
 }
 
 .productList {
     flex: 1;
-    background: white;
-    padding: 1rem;
+    padding: 15px;
+    background-color: #f9f9f9;
     border-radius: 8px;
-    max-height: 600px;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    max-height: calc(100vh - 300px);
     overflow-y: auto;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.productList h2 {
+    margin: 0 0 15px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #d9d9d9;
+    color: #2b52c4;
+    font-size: 1.2rem;
+    position: sticky;
+    top: 0;
+    background-color: #f9f9f9;
+    z-index: 1;
 }
 
 .productCard {
     width: 100%;
     margin-bottom: 10px;
+    transition: all 0.3s ease;
+    background-color: white;
 }
 
-.listTitle {
-    text-align: center;
-    margin-bottom: 15px;
-    color: #1890ff;
-    font-weight: bold;
+.productCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.backButton {
-    margin-top: 20px;
+.productCard h3 {
+    color: #2b52c4;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.productCard p {
+    margin: 5px 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.checkStatusButton {
+    background-color: #6a89e5;
+    border-color: #6a89e5;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 15px;
+    height: auto;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.checkStatusButton:hover {
+    background-color: #2b52c4;
+    border-color: #2b52c4;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.checkStatusButton:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.lastCheckInfo {
+    text-align: right;
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    font-style: italic;
+}
+
+.statsContainer, .correlationContainer {
+    width: 90%;
+    max-height: calc(100% - 140px);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex-grow: 1;
+}
+
+.chartControls {
+    display: flex;
+    gap: 10px;
     margin-bottom: 20px;
+}
+
+.chartContainer {
+    flex: 1;
+    min-height: 300px;
+    max-height: 500px;
+    margin-bottom: 20px;
+}
+
+.correlationInfo {
+    background-color: #f0f5ff;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #91caff;
+}
+
+.correlationDetails {
+    display: flex;
+    gap: 30px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.matrixContainer {
+    width: 100%;
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.matrixContainer h3 {
+    margin-bottom: 15px;
+    color: #1a1a1a;
+    font-weight: bold;
+    text-align: center;
+}
+
+.correlationTable {
+    margin-top: 15px;
+    background-color: #fff;
+    width: 100%;
+    overflow: visible !important;
+}
+
+.correlationTable th {
+    background-color: #2b52c4 !important;
+    color: white !important;
+    font-weight: bold;
+    text-align: center !important;
+    white-space: nowrap;
+}
+
+.correlationTable td {
+    text-align: center;
+}
+
+.correlationTable :global(.ant-table-cell-title) {
+    color: white !important;
+    background-color: #2b52c4 !important;
+}
+
+.correlationTable :global(.ant-table-cell-strong) {
+    color: white !important;
+    background-color: #ff4d4f !important;
+}
+
+.correlationTable :global(.ant-table-cell-medium) {
+    background-color: #ffec3d !important;
+}
+
+.correlationTable :global(.ant-table-cell-weak) {
+    background-color: #d1e0fc !important;
+}
+
+.correlationTable :global(.ant-table-cell-no-data) {
+    background-color: #f0f0f0 !important;
+    color: #999 !important;
+    font-style: italic;
+}
+
+.correlationTable :global(.ant-table-container) {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.correlationTable :global(.ant-table-content) {
+    overflow: visible !important;
+}
+
+.correlationTable :global(.ant-table-body) {
+    overflow: visible !important;
+}
+
+.reasonsContainer {
+    margin-bottom: 30px;
+    margin-top: 40px;
+}
+
+.reasonsCollapse {
+    margin-top: 15px;
+}
+
+.reasonTitle {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.reasonDescription {
+    margin-bottom: 15px;
+    color: #444;
+}
+
+.measureCard {
+    width: 100%;
+    margin-bottom: 15px;
+    border: 1px solid #91caff;
+    border-radius: 8px;
+    background-color: white;
+}
+
+.measureCard :global(.ant-card-head) {
+    background-color: #f0f5ff;
+}
+
+.measureCard :global(.ant-tag) {
+    font-size: 16px;
+    padding: 2px 10px;
+    border-radius: 4px;
+}
+
+.measureCard :global(.ant-card-body) {
+    font-size: 16px;
+    padding: 15px;
+    line-height: 1.5;
+}
+
+.reasonPanel {
+    background-color: #f9f9f9;
+    border-radius: 4px;
 }
 
 .loading {
@@ -197,4 +314,218 @@
     justify-content: center;
     align-items: center;
     height: 200px;
+}
+
+.error {
+    color: #d32029;
+    padding: 20px;
+    background-color: #fff2f0;
+    border: 1px solid #ffccc7;
+    border-radius: 4px;
+    margin: 20px 0;
+}
+
+.noData {
+    padding: 30px;
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+}
+
+.productsContainer {
+    display: flex;
+    gap: 20px;
+}
+
+.listTitle {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #d9d9d9;
+}
+
+.backButton {
+    margin: 1rem 0;
+    background-color: #6a89e5;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: #000;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
+    align-self: flex-start;
+    margin-left: 5%;
+    z-index: 10;
+}
+
+.backButton:hover {
+    background-color: #2b52c4;
+    color: white;
+}
+
+/* Стили для печати */
+@media print {
+    .tabs, .backButton, .chartControls {
+        display: none;
+    }
+}
+
+.legendContainer {
+    display: flex;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.legendItem {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.legendColor {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    border: 1px solid #d9d9d9;
+}
+
+.reasonsTable {
+    width: 100%;
+    border: 1px solid #91caff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.reasonsTableHeader {
+    display: flex;
+    background-color: #2b52c4;
+    color: white;
+    font-weight: bold;
+}
+
+.reasonsTableRow {
+    display: flex;
+    border-top: 1px solid #91caff;
+    background-color: #d1e0fc;
+}
+
+.reasonsTableCell {
+    padding: 12px 15px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.reasonsTableCell:first-child {
+    border-right: 1px solid #91caff;
+}
+
+.viewMeasuresButton {
+    background-color: #6a89e5;
+    border-color: #6a89e5;
+    color: #000;
+    font-weight: bold;
+    border-radius: 20px;
+    padding: 4px 15px;
+    height: auto;
+}
+
+.viewMeasuresButton:hover, .viewMeasuresButton:focus {
+    background-color: #2b52c4;
+    border-color: #2b52c4;
+    color: #fff;
+}
+
+.measuresPopup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 85%;
+    max-width: 700px;
+    background: #fffde4;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    max-height: 80vh;
+    overflow-y: auto;
+    border: 2px solid #2b52c4;
+}
+
+.measuresPopupHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #2b52c4;
+    padding-bottom: 15px;
+}
+
+.measuresPopupHeader h4 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: bold;
+    color: #2b52c4;
+}
+
+.closeButton {
+    font-size: 28px;
+    line-height: 1;
+    background: #6a89e5;
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    cursor: pointer;
+}
+
+.closeButton:hover {
+    background: #2b52c4;
+}
+
+.reasonDescription {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.closePopupButton {
+    background-color: #6a89e5;
+    border-color: #6a89e5;
+    color: #000;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 10px;
+    padding: 4px 25px;
+    height: auto;
+    text-transform: lowercase;
+}
+
+.closePopupButton:hover, .closePopupButton:focus {
+    background-color: #2b52c4;
+    border-color: #2b52c4;
+    color: #fff;
 }

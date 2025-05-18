@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchErrorData } from '../../../../redux/slices/inaccuracy';
-import { fetchProducts, updateProductStatus } from '../../../../redux/slices/products';
+import { fetchErrorData, fetchCorrelationMatrix } from '../../../../redux/slices/inaccuracy';
+import { fetchProducts, updateProductStatus, checkProductsStatus } from '../../../../redux/slices/products';
 import styles from './ErrorAnalysisFrame.module.css';
-import { Button, List, Card, Spin, message } from 'antd';
+import { Button, List, Card, Spin, message, Table, Collapse, Tag, Tooltip } from 'antd';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -11,11 +11,14 @@ import {
     PointElement,
     LineElement,
     Title,
-    Tooltip,
+    Tooltip as ChartTooltip,
     Legend,
     ScatterController
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { SyncOutlined } from '@ant-design/icons';
+
+const { Panel } = Collapse;
 
 ChartJS.register(
     CategoryScale,
@@ -23,17 +26,27 @@ ChartJS.register(
     PointElement,
     LineElement,
     Title,
-    Tooltip,
+    ChartTooltip,
     Legend,
     ScatterController
 );
 
+// Вспомогательная функция для проверки и форматирования числовых значений
+const formatNumber = (value, decimals = 3) => {
+    if (value === null || value === undefined || isNaN(value)) {
+        return 'Н/Д';
+    }
+    return Number(value).toFixed(decimals);
+};
+
 const ErrorAnalysisFrame = ({ onBack }) => {
     const [activeTab, setActiveTab] = useState('stats');
     const [chartType, setChartType] = useState('minus_50');
+    const [selectedReason, setSelectedReason] = useState(null);
     const dispatch = useDispatch();
     const { errorData, loading: inaccuracyLoading, error: inaccuracyError } = useSelector(state => state.inaccuracy);
-    const { accepted, rejected, loading: productsLoading, error: productsError } = useSelector(state => state.products);
+    const { correlationMatrix, correlationLoading, correlationError } = useSelector(state => state.inaccuracy);
+    const { accepted, rejected, loading: productsLoading, error: productsError, statusCheck } = useSelector(state => state.products);
 
     useEffect(() => {
         dispatch(fetchErrorData());
@@ -42,6 +55,8 @@ const ErrorAnalysisFrame = ({ onBack }) => {
     useEffect(() => {
         if (activeTab === 'products') {
             dispatch(fetchProducts());
+        } else if (activeTab === 'correlation') {
+            dispatch(fetchCorrelationMatrix());
         }
     }, [activeTab, dispatch]);
 
@@ -52,6 +67,17 @@ const ErrorAnalysisFrame = ({ onBack }) => {
             dispatch(fetchProducts());
         } catch (error) {
             message.error('Не удалось изменить статус изделия');
+        }
+    };
+
+    const handleCheckStatus = async () => {
+        try {
+            const result = await dispatch(checkProductsStatus()).unwrap();
+            message.success(`Проверено изделий: ${result.total_checked}, принято: ${result.accepted}, отклонено: ${result.rejected}`);
+            // Обновляем список изделий после проверки
+            dispatch(fetchProducts());
+        } catch (error) {
+            message.error('Не удалось проверить статус изделий');
         }
     };
 
@@ -74,10 +100,12 @@ const ErrorAnalysisFrame = ({ onBack }) => {
         years.forEach(year => {
             const yearValues = data.yearly_data[year][tempMode];
             yearValues.forEach(value => {
-                scatterData.push({
-                    x: year,
-                    y: value
-                });
+                if (!isNaN(value)) {
+                    scatterData.push({
+                        x: year,
+                        y: value
+                    });
+                }
             });
         });
     
@@ -132,7 +160,7 @@ const ErrorAnalysisFrame = ({ onBack }) => {
                     tooltip: {
                         callbacks: {
                             label: (context) => {
-                                return `μ = ${context.raw.y.toFixed(3)}`;
+                                return `μ = ${formatNumber(context.raw.y)}`;
                             }
                         }
                     }
@@ -172,32 +200,193 @@ const ErrorAnalysisFrame = ({ onBack }) => {
         };
     };
 
-    const renderCorrelationInfo = () => {
-        if (!errorData?.correlations || !errorData.correlations[chartType]) return null;
 
-        const correlationData = errorData.correlations[chartType];
+    const renderCorrelationMatrix = () => {
+        if (!correlationMatrix || !correlationMatrix.matrix) {
+            return <div className={styles.noData}>Нет данных для отображения матрицы корреляций</div>;
+        }
+
+        const matrix = correlationMatrix.matrix;
+        
+        // Преобразование данных в формат с указанием температурного режима
+        const formattedMatrix = {};
+        
+        // Задаем названия температурных режимов для идентификаторов
+        const tempModes = {
+            'minus_50': 'При -50°C',
+            'plus_50': 'При +50°C',
+            'nku': 'При НКУ'
+        };
+        
+        // Преобразование матрицы для отображения с учетом температурных режимов
+        Object.keys(matrix).forEach(factorKey => {
+            // Определяем режим из ключа или используем стандартный
+            let tempMode = 'unknown';
+            for (const [modeKey, modeLabel] of Object.entries(tempModes)) {
+                if (factorKey.toLowerCase().includes(modeKey.toLowerCase())) {
+                    tempMode = modeKey;
+                    break;
+                }
+            }
+            
+            // Создаем новый ключ с указанием температурного режима
+            const newKey = `${factorKey} ${tempModes[tempMode] || ''}`;
+            formattedMatrix[newKey] = matrix[factorKey];
+        });
+
+        // Получаем колонки из первого элемента матрицы
+        const firstKey = Object.keys(formattedMatrix)[0];
+        const columns = Object.keys(formattedMatrix[firstKey]).map(key => ({
+            title: key,
+            dataIndex: key,
+            key: key,
+            align: 'center',
+            className: 'matrix-cell',
+            render: (text) => {
+                // Обработка null или undefined значений
+                if (text === null || text === undefined) {
+                    return {
+                        props: {
+                            className: 'ant-table-cell-no-data'
+                        },
+                        children: 'Н/Д'
+                    };
+                }
+                
+                if (typeof text === 'number') {
+                    // Определяем класс ячейки на основе значения корреляции
+                    let cellClassName = '';
+                    if (Math.abs(text) >= 0.5) {
+                        cellClassName = 'ant-table-cell-strong';
+                    } else if (Math.abs(text) >= 0.3) {
+                        cellClassName = 'ant-table-cell-medium';
+                    } else {
+                        cellClassName = 'ant-table-cell-weak';
+                    }
+                    
+                    return {
+                        props: {
+                            className: cellClassName
+                        },
+                        children: formatNumber(text)
+                    };
+                }
+                return text;
+            }
+        }));
+        columns.unshift({
+            className: 'ant-table-cell-title',
+            title: '',
+            dataIndex: 'factor',
+            key: 'factor',
+            fixed: 'left',
+            width: 100
+        });
+
+        // Формируем данные для таблицы
+        const dataSource = Object.keys(formattedMatrix).map((rowKey, index) => {
+            const row = { 
+                key: index.toString(),
+                factor: rowKey
+            };
+            
+            Object.keys(formattedMatrix[rowKey]).forEach(colKey => {
+                row[colKey] = formattedMatrix[rowKey][colKey];
+            });
+            
+            return row;
+        });
+
         return (
-            <div className={styles.correlationInfo}>
-                <h3>Корреляционный анализ для {
-                    chartType === 'minus_50' ? '-50°C' : 
-                    chartType === 'plus_50' ? '+50°C' : 'НКУ'
-                }</h3>
-                <p>Корреляция с влажностью: {correlationData.humidity?.toFixed(3) || 'Н/Д'}</p>
-                <p>Корреляция с годом выпуска: {correlationData.year?.toFixed(3) || 'Н/Д'}</p>
-                <div className={styles.correlationDetails}>
-                    <div>
-                        <h4>Средние значения по типам изделий:</h4>
-                        {Object.entries(correlationData.types || {}).map(([type, value]) => (
-                            <p key={type}>{type}: {value.toFixed(3)}</p>
-                        ))}
+            <div className={styles.matrixContainer}>
+                <h3>Матрица коэффициентов корреляции</h3>
+                <Table 
+                    dataSource={dataSource} 
+                    columns={columns} 
+                    pagination={false}
+                    bordered
+                    size="middle"
+                    className={styles.correlationTable}
+                    scroll={{ x: 'max-content' }}
+                />
+            </div>
+        );
+    };
+
+    const renderReasonsAndMeasures = () => {
+        if (!correlationMatrix || !correlationMatrix.reasons || correlationMatrix.reasons.length === 0) {
+            return <div className={styles.noData}>Нет данных о причинах погрешностей</div>;
+        }
+
+        const viewMeasures = (index) => {
+            setSelectedReason(selectedReason === index ? null : index);
+        };
+
+        return (
+            <div className={styles.reasonsContainer}>
+                <h3>Причины возникновения погрешностей и мероприятия по их устранению</h3>
+                <div className={styles.reasonsTable}>
+                    <div className={styles.reasonsTableHeader}>
+                        <div className={styles.reasonsTableCell}>Причины</div>
+                        <div className={styles.reasonsTableCell}>Мероприятия</div>
                     </div>
-                    <div>
-                        <h4>Средние значения по частям:</h4>
-                        {Object.entries(correlationData.departments || {}).map(([dept, value]) => (
-                            <p key={dept}>{dept}: {value.toFixed(3)}</p>
-                        ))}
-                    </div>
+                    {correlationMatrix.reasons.map((reason, index) => (
+                        <div key={index} className={styles.reasonsTableRow}>
+                            <div className={styles.reasonsTableCell}>{reason.title}</div>
+                            <div className={styles.reasonsTableCell}>
+                                <Button
+                                    type="primary"
+                                    className={styles.viewMeasuresButton}
+                                    onClick={() => viewMeasures(index)}
+                                >
+                                    Посмотреть мероприятия
+                                </Button>
+                            </div>
+                        </div>
+                    ))}
                 </div>
+                
+                {selectedReason !== null && (
+                    <>
+                        <div className={styles.overlay} onClick={() => setSelectedReason(null)}></div>
+                        <div className={styles.measuresPopup}>
+                            <div className={styles.measuresPopupHeader}>
+                                <h4>{correlationMatrix.reasons[selectedReason].title}</h4>
+                                <Button 
+                                    type="text" 
+                                    onClick={() => setSelectedReason(null)}
+                                    className={styles.closeButton}
+                                >
+                                    ×
+                                </Button>
+                            </div>
+                            <p className={styles.reasonDescription}>
+                                {correlationMatrix.reasons[selectedReason].description}
+                            </p>
+                            <List
+                                dataSource={correlationMatrix.reasons[selectedReason].measures}
+                                renderItem={(measure, idx) => (
+                                    <List.Item key={idx}>
+                                        <Card 
+                                            title={<Tag color="blue">{measure.title}</Tag>}
+                                            className={styles.measureCard}
+                                        >
+                                            {measure.description}
+                                        </Card>
+                                    </List.Item>
+                                )}
+                            />
+                            <div style={{ textAlign: 'center', marginTop: 20 }}>
+                                <Button
+                                    className={styles.closePopupButton}
+                                    onClick={() => setSelectedReason(null)}
+                                >
+                                    закрыть
+                                </Button>
+                            </div>
+                        </div>
+                    </>
+                )}
             </div>
         );
     };
@@ -213,52 +402,59 @@ const ErrorAnalysisFrame = ({ onBack }) => {
 
         return (
             <div className={styles.productsContainer}>
-                <div className={styles.productList}>
-                    <h2 className={styles.listTitle}>Принятые изделия</h2>
-                    <List
-                        dataSource={accepted}
-                        renderItem={item => (
-                            <List.Item>
-                                <Card 
-                                    className={styles.productCard}
-                                    actions={[
-                                        <Button 
-                                            danger 
-                                            onClick={() => handleProductStatusChange(item.id, false)}
-                                        >
-                                            Отклонить
-                                        </Button>
-                                    ]}
-                                >
-                                    {item.name}
-                                </Card>
-                            </List.Item>
-                        )}
-                    />
+                <div className={styles.productsHeader}>
+                    <h2>Статус изделий</h2>
+                    <Tooltip title="Проверить статус новых изделий">
+                        <Button
+                            type="primary"
+                            icon={<SyncOutlined spin={statusCheck.loading} />}
+                            onClick={handleCheckStatus}
+                            loading={statusCheck.loading}
+                            className={styles.checkStatusButton}
+                        >
+                            Проверить новые изделия
+                        </Button>
+                    </Tooltip>
                 </div>
+                {statusCheck.lastCheck && (
+                    <div className={styles.lastCheckInfo}>
+                        Последняя проверка: {new Date(statusCheck.lastCheck).toLocaleString()}
+                    </div>
+                )}
+                <div className={styles.productsListsContainer}>
+                    <div className={styles.productList}>
+                        <h2>Принятые изделия</h2>
+                        <List
+                            dataSource={accepted}
+                            renderItem={item => (
+                                <List.Item>
+                                    <Card className={styles.productCard}>
+                                        <h3>Изделие №{item.system_number}</h3>
+                                        <p>Тип: {item.system_type || 'Не указан'}</p>
+                                        <p>Часть: {item.department || 'Не указана'}</p>
+                                        <p>Дата теста: {item.test_date || 'Не указана'}</p>
+                                    </Card>
+                                </List.Item>
+                            )}
+                        />
+                    </div>
 
-                <div className={styles.productList}>
-                    <h2 className={styles.listTitle}>Непринятые изделия</h2>
-                    <List
-                        dataSource={rejected}
-                        renderItem={item => (
-                            <List.Item>
-                                <Card 
-                                    className={styles.productCard}
-                                    actions={[
-                                        <Button 
-                                            type="primary" 
-                                            onClick={() => handleProductStatusChange(item.id, true)}
-                                        >
-                                            Принять
-                                        </Button>
-                                    ]}
-                                >
-                                    {item.name}
-                                </Card>
-                            </List.Item>
-                        )}
-                    />
+                    <div className={styles.productList}>
+                        <h2>Непринятые изделия</h2>
+                        <List
+                            dataSource={rejected}
+                            renderItem={item => (
+                                <List.Item>
+                                    <Card className={styles.productCard}>
+                                        <h3>Изделие №{item.system_number}</h3>
+                                        <p>Тип: {item.system_type || 'Не указан'}</p>
+                                        <p>Часть: {item.department || 'Не указана'}</p>
+                                        <p>Дата теста: {item.test_date || 'Не указана'}</p>
+                                    </Card>
+                                </List.Item>
+                            )}
+                        />
+                    </div>
                 </div>
             </div>
         );
@@ -267,25 +463,28 @@ const ErrorAnalysisFrame = ({ onBack }) => {
     return (
         <div className={styles.frameContent}>
             <div className={styles.topTitle}>
-                <h2>Анализ погрешностей</h2>
+                Анализ погрешностей
             </div>
 
             <div className={styles.tabs}>
                 <Button
                     type={activeTab === 'products' ? 'primary' : 'default'}
                     onClick={() => setActiveTab('products')}
+                    className={styles.homeButton}
                 >
                     (Не)принятые изделия
                 </Button>
                 <Button
                     type={activeTab === 'stats' ? 'primary' : 'default'}
                     onClick={() => setActiveTab('stats')}
+                    className={styles.homeButton}
                 >
                     Статистика
                 </Button>
                 <Button
                     type={activeTab === 'correlation' ? 'primary' : 'default'}
                     onClick={() => setActiveTab('correlation')}
+                    className={styles.homeButton}
                 >
                     Корреляция
                 </Button>
@@ -296,7 +495,7 @@ const ErrorAnalysisFrame = ({ onBack }) => {
             {activeTab === 'stats' && (
                 <div className={styles.statsContainer}>
                     {inaccuracyLoading ? (
-                        <div className={styles.loading}>Загрузка данных...</div>
+                        <div className={styles.loading}><Spin size="large" tip="Загрузка данных..." /></div>
                     ) : inaccuracyError ? (
                         <div className={styles.error}>{inaccuracyError}</div>
                     ) : (
@@ -305,18 +504,21 @@ const ErrorAnalysisFrame = ({ onBack }) => {
                                 <Button 
                                     type={chartType === 'minus_50' ? 'primary' : 'default'}
                                     onClick={() => setChartType('minus_50')}
+                                    className={styles.homeButton}
                                 >
                                     -50°C
                                 </Button>
                                 <Button 
                                     type={chartType === 'plus_50' ? 'primary' : 'default'}
                                     onClick={() => setChartType('plus_50')}
+                                    className={styles.homeButton}
                                 >
                                     +50°C
                                 </Button>
                                 <Button 
                                     type={chartType === 'nku' ? 'primary' : 'default'}
                                     onClick={() => setChartType('nku')}
+                                    className={styles.homeButton}
                                 >
                                     НКУ
                                 </Button>
@@ -331,33 +533,17 @@ const ErrorAnalysisFrame = ({ onBack }) => {
 
             {activeTab === 'correlation' && (
                 <div className={styles.correlationContainer}>
-                    {inaccuracyLoading ? (
-                        <div className={styles.loading}>Загрузка данных...</div>
-                    ) : inaccuracyError ? (
-                        <div className={styles.error}>{inaccuracyError}</div>
+                    {correlationLoading || inaccuracyLoading ? (
+                        <div className={styles.loading}><Spin size="large" tip="Загрузка данных..." /></div>
+                    ) : correlationError || inaccuracyError ? (
+                        <div className={styles.error}>{correlationError || inaccuracyError}</div>
                     ) : (
                         <>
-                            <div className={styles.chartControls}>
-                                <Button 
-                                    type={chartType === 'minus_50' ? 'primary' : 'default'}
-                                    onClick={() => setChartType('minus_50')}
-                                >
-                                    -50°C
-                                </Button>
-                                <Button 
-                                    type={chartType === 'plus_50' ? 'primary' : 'default'}
-                                    onClick={() => setChartType('plus_50')}
-                                >
-                                    +50°C
-                                </Button>
-                                <Button 
-                                    type={chartType === 'nku' ? 'primary' : 'default'}
-                                    onClick={() => setChartType('nku')}
-                                >
-                                    НКУ
-                                </Button>
-                            </div>
-                            {renderCorrelationInfo()}
+                            {/* Отображение матрицы корреляций */}
+                            {renderCorrelationMatrix()}
+                            
+                            {/* Отображение причин и мероприятий */}
+                            {renderReasonsAndMeasures()}
                         </>
                     )}
                 </div>
